@@ -51,7 +51,6 @@ def build_model():
     parameters = {
         'clf__estimator__n_estimators': [50,100,200],
         'clf__estimator__min_samples_split': [2,3,4]
-        ''
     }
 
     cv = GridSearchCV(pipeline, param_grid=parameters, verbose=12)
@@ -72,6 +71,7 @@ def evaluate_f1(Y_test, Y_pred):
     for i,col in enumerate(Y_test.columns):
         results_dict[col] = f1_score(Y_test[col],Y_pred[:,i],average='micro')
     df_eva = pd.DataFrame([results_dict],index=['f1_score']).T
+    df_eva.sort_values()
     return df_eva
 
 
@@ -94,6 +94,7 @@ def main():
 
         print('Evaluating model...')
         evaluate_model(model, X_test, Y_test, category_names)
+        evaluate_f1(Y_test, Y_pred)
 
         print('Saving model...\n    MODEL: {}'.format(model_filepath))
         save_model(model, model_filepath)
